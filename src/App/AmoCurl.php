@@ -4,6 +4,13 @@ namespace App;
 
 use App\Helpers\Token;
 use App\tools\Auth;
+use App\tools\Catalogs;
+use App\tools\Catalogs_Elements;
+use App\tools\Companies;
+use App\tools\Contacts;
+use App\tools\Leads;
+use App\tools\Pipelines;
+use App\tools\Pipelines_statuses;
 use Exception;
 
 class AmoCurl
@@ -14,12 +21,15 @@ class AmoCurl
     public string $secret_key;
     public string $redirect_uri;
 
-    public string $access_token;
-
-
     public Auth $auth;
 
-    public $leads;
+    public Catalogs $catalogs;
+    public Catalogs_Elements $catalogs_Elements;
+    public Companies $companies;
+    public  Contacts $contacts;
+    public Leads $leads;
+    public  Pipelines $pipelines;
+    public Pipelines_statuses $pipelines_statuses;
 
     public function __construct($basedomain)
     {
@@ -29,6 +39,13 @@ class AmoCurl
         $this->redirect_uri = getenv('Redirect_uri');
 
         $this->auth = new Auth($this);
+        $this->catalogs=new Catalogs($this);
+        $this->catalogs_Elements=new Catalogs_Elements($this);
+        $this->companies=new Companies($this);
+        $this->leads=new Leads($this);
+        $this->pipelines= new Pipelines($this);
+        $this->pipelines_statuses= new Pipelines_statuses($this);
+        $this->contacts=new Contacts($this);
     }
 
     public function request($method, $link, $data = [])
