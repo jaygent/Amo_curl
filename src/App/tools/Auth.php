@@ -3,8 +3,7 @@
 namespace App\tools;
 
 use App\AmoCurl;
-use App\Contracts\BaseEntity;
-use App\Helpers\Token;
+use App\Token;
 
 class Auth
 {
@@ -23,7 +22,7 @@ class Auth
             'redirect_uri' => $this->amoclient->redirect_uri,
         ];
 
-      Token::setToken($this->amoclient->request('POST', $this->amoclient->url . 'oauth2/access_token',json_decode($data)));
+        Token::setToken($this->amoclient->request('POST', $this->amoclient->url . 'oauth2/access_token',json_decode($data)),['Content-Type:application/json']);
     }
 
     public function refresh_token()
@@ -35,23 +34,6 @@ class Auth
             'refresh_token' => Token::getToken()['refresh_token'],
             'redirect_uri' => $this->amoclient->redirect_uri,
         ];
-        Token::setToken($this->amoclient->request('POST','https://' . $this->amoclient->basedomain . '.amocrm.ru/oauth2/access_token',json_decode($data)));
+        Token::setToken($this->amoclient->request('POST','https://' . $this->amoclient->basedomain . '.amocrm.ru/oauth2/access_token',json_decode($data),['Content-Type:application/json']));
     }
-
-    public function getHeader(): array
-    {
-
-        if(isset(Token::getToken()['code'])){
-           return ['Content-Type:application/json'];
-        } elseif (isset(Token::getToken()['access_token'])){
-            if(time()>Token::getToken()['expires_in']){
-                return ['Content-Type:application/json'];
-            }
-            return ['Content-Type:application/json','Authorization:Bearer '.Token::getToken()['access_token']];
-        }else{
-            throw new \Exception('Не понятно что в файле, ошибка чтения файла');
-            die();
-        }
-    }
-
 }

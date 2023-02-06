@@ -7,7 +7,7 @@ class Pipelines extends \App\Contracts\BaseEntity
     public string $urlentity = 'api/v4/leads/pipelines';
 
 
-    public function update($data, $id)
+    public function update($data, $id=0)
     {
         return $this->amoclient->request(
                 'PATCH',

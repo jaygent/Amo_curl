@@ -2,7 +2,7 @@
 
 namespace App;
 
-use App\Helpers\Token;
+
 use App\tools\Auth;
 use App\tools\Catalogs;
 use App\tools\Catalogs_Elements;
@@ -38,7 +38,6 @@ class AmoCurl
         $this->secret_key = getenv('Secret_key');
         $this->redirect_uri = getenv('Redirect_uri');
 
-        $this->auth = new Auth($this);
         $this->catalogs=new Catalogs($this);
         $this->catalogs_Elements=new Catalogs_Elements($this);
         $this->companies=new Companies($this);
@@ -46,21 +45,11 @@ class AmoCurl
         $this->pipelines= new Pipelines($this);
         $this->pipelines_statuses= new Pipelines_statuses($this);
         $this->contacts=new Contacts($this);
+        $this->auth=new Auth($this);
     }
 
-    public function request($method, $link, $data = [])
+    public function request($method, $link, $data = [],$header=['Content-Type:application/json','Authorization:Bearer '.Token::getToken()['access_token']])
     {
-        if(isset(Token::getToken()['code'])){
-           $this->auth->authorization_code(Token::getToken()['code']);
-        }elseif(time()>Token::getToken()['expires_in']){
-            $this->auth->refresh_token();
-        }
-        try{
-            $header=$this->auth->getHeader();
-        }catch (Exception $e){
-            echo $e->getMessage();
-            die();
-        }
         $curl = curl_init();
         curl_setopt($curl, CURLOPT_RETURNTRANSFER, true);
         curl_setopt($curl, CURLOPT_USERAGENT, 'amoCRM-oAuth-client/1.0');

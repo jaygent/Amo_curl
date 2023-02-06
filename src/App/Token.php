@@ -1,10 +1,6 @@
 <?php
 
-namespace App\Helpers;
-
-use App\Model\Contacts;
-use App\Model\Users;
-use League\OAuth2\Client\Token\AccessToken;
+namespace App;
 
 /**
  * Сохранение и получение Токенов из amocrm
@@ -16,8 +12,11 @@ class Token
      * @param array $data
      * @return void
      */
-    public static function setToken(array $data): void
+    public static function setToken(string $data): void
     {
+        $data=json_decode($data);
+        $data->expires_in=time()+$data->expires_in;
+        $data=json_encode($data);
         $fh = fopen(self::$filename, 'w');
         fwrite($fh, $data);
         fclose($fh);
@@ -28,7 +27,9 @@ class Token
      */
     public static function getToken(): array
     {
-        $file=file_get_contents(self::$filename);
+        $fh = fopen(self::$filename, 'r');
+        $file = fread($fh,filesize(self::$filename));
+        fclose($fh);
      return  json_decode($file,true);
     }
 }
