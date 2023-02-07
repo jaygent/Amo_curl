@@ -8,7 +8,7 @@ class BaseEntity implements Entity
 {
     protected AmoCurl $amoclient;
 
-    public string $urlentity = 'api/v4';
+    public string $urlentity;
 
     public function __construct(AmoCurl $amoclient)
     {

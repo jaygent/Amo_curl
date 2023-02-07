@@ -48,8 +48,11 @@ class AmoCurl
         $this->auth=new Auth($this);
     }
 
-    public function request($method, $link, $data = [],$header=['Content-Type:application/json','Authorization:Bearer '.Token::getToken()['access_token']])
+    public function request($method, $link, $data = [], $header=[])
     {
+        if(empty($header)){
+            $header=['Content-Type:application/json','Authorization:Bearer '.Token::getToken()['access_token']];
+        }
         $curl = curl_init();
         curl_setopt($curl, CURLOPT_RETURNTRANSFER, true);
         curl_setopt($curl, CURLOPT_USERAGENT, 'amoCRM-oAuth-client/1.0');
